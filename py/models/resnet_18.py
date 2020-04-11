@@ -12,8 +12,8 @@ from models.res_net import ResNet
 from models.basic_block import BasicBlock
 
 
-def resnet18():
-    model = ResNet(BasicBlock, [2, 2, 2, 2])
+def resnet18(num_classes=1000):
+    model = ResNet(BasicBlock, [2, 2, 2, 2], num_classes=num_classes)
     return model
 
 

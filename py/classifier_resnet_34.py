@@ -2,7 +2,7 @@
 
 """
 @date: 2020/4/11 下午2:51
-@file: classifier_resnet_18.py
+@file: classifier_resnet_34.py
 @author: zj
 @description: 
 """
@@ -15,11 +15,11 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
-from torchvision.models import vgg19
 from torchvision.datasets import ImageFolder
 
 import utils.util as util
 import models.resnet_18 as resnet_18
+import models.resnet_34 as resnet_34
 
 
 def load_data(data_root_dir):
@@ -131,18 +131,18 @@ if __name__ == '__main__':
 
     res_loss = dict()
     res_acc = dict()
-    for name in ['ResNet-18', 'VGG-19']:
+    for name in ['ResNet-34', 'ResNet-18']:
         if name == 'ResNet-18':
             model = resnet_18.resnet18(num_classes=20)
         else:
-            model = vgg19(num_classes=20)
+            model = resnet_34.resnet34(num_classes=20)
         model.eval()
         # print(model)
         model = model.to(device)
 
         criterion = nn.CrossEntropyLoss()
         optimizer = optim.Adam(model.parameters(), lr=1e-3)
-        lr_schduler = optim.lr_scheduler.StepLR(optimizer, step_size=8, gamma=0.96)
+        lr_schduler = optim.lr_scheduler.StepLR(optimizer, step_size=8, gamma=0.9)
 
         util.check_dir('./data/models/')
         best_model, loss_dict, acc_dict = train_model(data_loaders, data_sizes, name, model,

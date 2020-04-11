@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """
-@date: 2020/4/11 下午2:51
-@file: classifier_resnet_34.py
+@date: 2020/4/11 下午7:35
+@file: classifier_resnet_50_101.py
 @author: zj
 @description: 
 """
@@ -18,8 +18,8 @@ import torchvision.transforms as transforms
 from torchvision.datasets import ImageFolder
 
 import utils.util as util
-import models.resnet_18 as resnet_18
-import models.resnet_34 as resnet_34
+import models.resnet_50 as resnet_50
+import models.resnet_101 as resnet_101
 
 
 def load_data(data_root_dir):
@@ -131,11 +131,11 @@ if __name__ == '__main__':
 
     res_loss = dict()
     res_acc = dict()
-    for name in ['ResNet-34', 'ResNet-18']:
-        if name == 'ResNet-18':
-            model = resnet_18.resnet18(num_classes=20)
+    for name in ['ResNet-50', 'ResNet-101']:
+        if name == 'ResNet-50':
+            model = resnet_50.resnet50(num_classes=20)
         else:
-            model = resnet_34.resnet34(num_classes=20)
+            model = resnet_101.resnet101(num_classes=20)
         model.eval()
         # print(model)
         model = model.to(device)

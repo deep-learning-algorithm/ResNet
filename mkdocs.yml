@@ -30,3 +30,5 @@ extra_javascript:
 # 导航
 nav:
     - Home: index.md
+    - 训练日志:
+        - 'ResNet-18 vs. ResNet-34': './log-resnet_18-vs-resnet_34.md'

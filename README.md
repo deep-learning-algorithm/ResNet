@@ -21,6 +21,7 @@
 终于接触到了`ResNet`，相比于传统的网络模型，`ResNet`通过残差结构实现了更好的训练结果。相关论文如下：
 
 * [Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385)
+* [Identity Mappings in Deep Residual Networks](https://arxiv.org/abs/1603.05027)
 
 ## 安装
 
@@ -60,6 +61,15 @@ $ pip install -r requirements.txt
     author={Kaiming He and Xiangyu Zhang and Shaoqing Ren and Jian Sun},
     year={2015},
     eprint={1512.03385},
+    archivePrefix={arXiv},
+    primaryClass={cs.CV}
+}
+
+@misc{he2016identity,
+    title={Identity Mappings in Deep Residual Networks},
+    author={Kaiming He and Xiangyu Zhang and Shaoqing Ren and Jian Sun},
+    year={2016},
+    eprint={1603.05027},
     archivePrefix={arXiv},
     primaryClass={cs.CV}
 }

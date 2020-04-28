@@ -163,7 +163,7 @@ if __name__ == '__main__':
     res_top1_acc = dict()
     res_top5_acc = dict()
     num_classes = 20
-    for name in ['SqueezeNetBypass', 'SqueezeNet', 'AlexNet']:
+    for name in ['resnet-50', 'resnet-34', 'resnet-18']:
         if name == 'resnet-50':
             model = res_net.resnet50(num_classes=num_classes)
         elif name == 'resnet-34':

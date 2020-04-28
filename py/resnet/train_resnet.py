@@ -51,7 +51,7 @@ def load_data(data_root_dir):
         # print(data_dir)
 
         data_set = ImageFolder(data_dir, transform=transform)
-        data_loader = DataLoader(data_set, batch_size=128, shuffle=True, num_workers=8)
+        data_loader = DataLoader(data_set, batch_size=96, shuffle=True, num_workers=8)
         data_loaders[name] = data_loader
         data_sizes[name] = len(data_set)
     return data_loaders, data_sizes

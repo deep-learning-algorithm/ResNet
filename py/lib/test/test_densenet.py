@@ -8,7 +8,7 @@
 """
 
 import torch
-from models.densenet import densenet
+from models.densenet import dense_net
 
 
 def test_densenet121():
@@ -16,7 +16,7 @@ def test_densenet121():
     num_classes = 20
 
     data = torch.randn((N, 3, 224, 224))
-    model = densenet.densenet121(num_classes=num_classes)
+    model = dense_net.densenet121(num_classes=num_classes)
     outputs = model(data)
 
     assert outputs.shape == (N, num_classes)
@@ -27,7 +27,7 @@ def test_densenet169():
     num_classes = 20
 
     data = torch.randn((N, 3, 224, 224))
-    model = densenet.densenet169(num_classes=num_classes)
+    model = dense_net.densenet169(num_classes=num_classes)
     outputs = model(data)
 
     assert outputs.shape == (N, num_classes)
@@ -38,7 +38,7 @@ def test_densenet201():
     num_classes = 20
 
     data = torch.randn((N, 3, 224, 224))
-    model = densenet.densenet201(num_classes=num_classes)
+    model = dense_net.densenet201(num_classes=num_classes)
     outputs = model(data)
 
     assert outputs.shape == (N, num_classes)
@@ -49,7 +49,7 @@ def test_densenet264():
     num_classes = 20
 
     data = torch.randn((N, 3, 224, 224))
-    model = densenet.densenet264(num_classes=num_classes)
+    model = dense_net.densenet264(num_classes=num_classes)
     outputs = model(data)
 
     assert outputs.shape == (N, num_classes)

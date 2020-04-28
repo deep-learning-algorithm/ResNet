@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 """
-@date: 2020/4/11 下午7:35
-@file: train_resnet_v2.py
+@date: 2020/4/28 下午10:42
+@file: train.py
 @author: zj
 @description: 
 """
@@ -20,14 +20,15 @@ from torchvision.datasets import ImageFolder
 from utils import util
 from utils import metrics
 from models.resnet import res_net
+from models.densenet import dense_net
 
 
 def flops_params():
-    for name in ['resnet-18_v2', 'resnet-18']:
-        if name == 'resnet-18_v2':
-            model = res_net.resnet18_v2()
+    for name in ['densenet_201', 'resnet-101_v2']:
+        if name == 'densenet_201':
+            model = dense_net.densenet201()
         else:
-            model = res_net.resnet18()
+            model = res_net.resnet101()
         gflops, params_size = metrics.compute_num_flops(model)
         print('{}: {:.3f} GFlops - {:.3f} MB'.format(name, gflops, params_size))
 
@@ -161,11 +162,11 @@ if __name__ == '__main__':
     res_top1_acc = dict()
     res_top5_acc = dict()
     num_classes = 20
-    for name in ['resnet-18_v2', 'resnet-18']:
-        if name == 'resnet-18_v2':
-            model = res_net.resnet18_v2(num_classes=num_classes)
+    for name in ['densenet_201', 'resnet-101_v2']:
+        if name == 'densenet_201':
+            model = dense_net.densenet201(num_classes=num_classes)
         else:
-            model = res_net.resnet18(num_classes=num_classes)
+            model = res_net.resnet101(num_classes=num_classes)
         model.eval()
         # print(model)
         model = model.to(device)

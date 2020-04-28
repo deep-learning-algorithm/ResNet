@@ -15,7 +15,7 @@ thop == 0.0.31.post2004272040
 # lib/models/basic_conv2d.py: 10,11
 # lib/models/densenet/dense_block.py: 10,11
 # lib/models/densenet/dense_layer.py: 10,11,12,13
-# lib/models/densenet/densenet.py: 10,11,12
+# lib/models/densenet/dense_net.py: 10,11,12
 # lib/models/densenet/densenet_121.py: 10
 # lib/models/densenet/transition.py: 10
 # lib/models/resnet/basic_block.py: 10

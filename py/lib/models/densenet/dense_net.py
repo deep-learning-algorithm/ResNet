@@ -2,7 +2,7 @@
 
 """
 @date: 2020/4/28 下午8:24
-@file: densenet.py
+@file: dense_net.py
 @author: zj
 @description: 
 """

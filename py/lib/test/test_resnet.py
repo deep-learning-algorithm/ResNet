@@ -64,3 +64,58 @@ def test_resnet152():
     outputs = model(data)
 
     assert outputs.shape == (N, num_classes)
+
+
+def test_resnet18_v2():
+    N = 1
+    num_classes = 20
+
+    data = torch.randn((N, 3, 224, 224))
+    model = res_net.resnet18_v2(num_classes=num_classes)
+    outputs = model(data)
+
+    assert outputs.shape == (N, num_classes)
+
+
+def test_resnet34_v2():
+    N = 1
+    num_classes = 20
+
+    data = torch.randn((N, 3, 224, 224))
+    model = res_net.resnet34_v2(num_classes=num_classes)
+    outputs = model(data)
+
+    assert outputs.shape == (N, num_classes)
+
+
+def test_resnet50_v2():
+    N = 1
+    num_classes = 20
+
+    data = torch.randn((N, 3, 224, 224))
+    model = res_net.resnet50_v2(num_classes=num_classes)
+    outputs = model(data)
+
+    assert outputs.shape == (N, num_classes)
+
+
+def test_resnet101_v2():
+    N = 1
+    num_classes = 20
+
+    data = torch.randn((N, 3, 224, 224))
+    model = res_net.resnet101_v2(num_classes=num_classes)
+    outputs = model(data)
+
+    assert outputs.shape == (N, num_classes)
+
+
+def test_resnet152_v2():
+    N = 1
+    num_classes = 20
+
+    data = torch.randn((N, 3, 224, 224))
+    model = res_net.resnet152_v2(num_classes=num_classes)
+    outputs = model(data)
+
+    assert outputs.shape == (N, num_classes)

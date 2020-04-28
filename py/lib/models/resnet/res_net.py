@@ -94,3 +94,28 @@ class ResNet(nn.Module):
     def conv1x1(self, in_planes, out_planes, stride=1):
         """1x1 convolution"""
         return nn.Conv2d(in_planes, out_planes, kernel_size=1, stride=stride, bias=False)
+
+
+def resnet18(num_classes=1000):
+    model = ResNet(BasicBlock, [2, 2, 2, 2], num_classes=num_classes)
+    return model
+
+
+def resnet34(num_classes=1000):
+    model = ResNet(BasicBlock, [3, 4, 6, 3], num_classes=num_classes)
+    return model
+
+
+def resnet50(num_classes=1000):
+    model = ResNet(Bottleneck, [3, 4, 6, 3], num_classes=num_classes)
+    return model
+
+
+def resnet101(num_classes=1000):
+    model = ResNet(Bottleneck, [3, 4, 23, 3], num_classes=num_classes)
+    return model
+
+
+def resnet152(num_classes=1000):
+    model = ResNet(Bottleneck, [3, 8, 36, 3], num_classes=num_classes)
+    return model

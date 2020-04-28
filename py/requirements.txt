@@ -27,14 +27,14 @@ thop == 0.0.31.post2004272040
 # lib/test/test_resnet.py: 10
 # lib/utils/metrics.py: 10
 # lib/utils/util.py: 13
-# resnet/classifier_resnet_50_101.py: 13,14,15,16
 # resnet/train_resnet.py: 13,14,15,16
+# resnet/train_resnet_v2.py: 13,14,15,16
 torch == 1.4.0
 
 # lib/data/pascal_voc.py: 14
 # lib/models/densenet/densenet_121.py: 12
-# resnet/classifier_resnet_50_101.py: 17,18
 # resnet/train_resnet.py: 17,18
+# resnet/train_resnet_v2.py: 17,18
 torchvision == 0.5.0
 
 # lib/data/create_train_val.py: 13

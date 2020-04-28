@@ -2,6 +2,10 @@ py/.idea/
 
 py/data/
 
-py/models/__pycache__
+py/models/
 
-py/utils/__pycache__/
+py/lib/models/__pycache__
+
+py/lib/utils/__pycache__/
+
+py/lib/models/densenet/__pycache__/

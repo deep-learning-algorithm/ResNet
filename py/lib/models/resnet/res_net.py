@@ -10,9 +10,11 @@
 import torch
 import torch.nn as nn
 
-from lib.models.resnet.basic_block import BasicBlock
-from lib.models.resnet.bottleneck import Bottleneck
-from lib.models.basic_conv2d import BasicConv2d
+from models.resnet.basic_block import BasicBlock
+from models.resnet.basic_block_v2 import BasicBlock_v2
+from models.resnet.bottleneck import Bottleneck
+from models.resnet.bottleneck_v2 import Bottleneck_v2
+from models.basic_conv2d import BasicConv2d
 
 
 class ResNet(nn.Module):
@@ -118,4 +120,31 @@ def resnet101(num_classes=1000):
 
 def resnet152(num_classes=1000):
     model = ResNet(Bottleneck, [3, 8, 36, 3], num_classes=num_classes)
+    return model
+
+
+############################ v2
+
+def resnet18_v2(num_classes=1000):
+    model = ResNet(BasicBlock_v2, [2, 2, 2, 2], num_classes=num_classes)
+    return model
+
+
+def resnet34_v2(num_classes=1000):
+    model = ResNet(BasicBlock_v2, [3, 4, 6, 3], num_classes=num_classes)
+    return model
+
+
+def resnet50_v2(num_classes=1000):
+    model = ResNet(Bottleneck_v2, [3, 4, 6, 3], num_classes=num_classes)
+    return model
+
+
+def resnet101_v2(num_classes=1000):
+    model = ResNet(Bottleneck_v2, [3, 4, 23, 3], num_classes=num_classes)
+    return model
+
+
+def resnet152_v2(num_classes=1000):
+    model = ResNet(Bottleneck_v2, [3, 8, 36, 3], num_classes=num_classes)
     return model

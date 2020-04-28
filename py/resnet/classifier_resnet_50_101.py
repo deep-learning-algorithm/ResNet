@@ -17,9 +17,9 @@ from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
 from torchvision.datasets import ImageFolder
 
-import utils.util as util
-import models.resnet_50 as resnet_50
-import models.resnet_101 as resnet_101
+import lib.utils.util as util
+import lib.models.resnet.resnet_50 as resnet_50
+from lib import models as resnet_101
 
 
 def load_data(data_root_dir):
@@ -125,7 +125,7 @@ if __name__ == '__main__':
     device = util.get_device()
     # device = 'cpu'
 
-    data_loaders, data_sizes = load_data('./data/pascal-voc')
+    data_loaders, data_sizes = load_data('../data/pascal-voc')
     print(data_loaders)
     print(data_sizes)
 

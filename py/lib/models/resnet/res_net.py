@@ -10,9 +10,9 @@
 import torch
 import torch.nn as nn
 
-from models.basic_block import BasicBlock
-from models.bottleneck import Bottleneck
-from models.basic_conv2d import BasicConv2d
+from lib.models.resnet.basic_block import BasicBlock
+from lib.models.resnet.bottleneck import Bottleneck
+from lib.models.basic_conv2d import BasicConv2d
 
 
 class ResNet(nn.Module):

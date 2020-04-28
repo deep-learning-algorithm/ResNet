@@ -8,8 +8,8 @@
 """
 
 import torch
-from models.res_net import ResNet
-from models.basic_block import BasicBlock
+from lib.models.resnet.res_net import ResNet
+from lib.models.resnet.basic_block import BasicBlock
 
 
 def resnet34(num_classes=1000):

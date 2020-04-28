@@ -8,8 +8,8 @@
 """
 
 import torch
-from models.res_net import ResNet
-from models.bottleneck import Bottleneck
+from lib.models.resnet.res_net import ResNet
+from lib.models.resnet.bottleneck import Bottleneck
 
 
 def resnet50(num_classes=1000):

@@ -4,7 +4,7 @@ py/data/
 
 py/models/
 
-py/lib/models/__pycache__
+py/lib/models/__pycache__/
 
 py/lib/utils/__pycache__/
 

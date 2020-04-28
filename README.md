@@ -4,13 +4,10 @@
 
 > `ResNet`算法实现
 
-`ResNet`通过残差结构的实现，能够实现更深的网络结构，并且极大的加快了训练速度，得到更好的训练结果。其前后实现了多个版本：
+实现`ResNet`及后续版本，同时实现了相关模型：
 
-* `ResNet-18`
-* `ResNet-34`
-* `ResNet-50`
-* `ResNet-101`
-* `ResNet-152`
+* `ResNet`
+* `DenseNet`
 
 ## 内容列表
 
@@ -26,6 +23,9 @@
 
 * [Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385)
 * [Identity Mappings in Deep Residual Networks](https://arxiv.org/abs/1603.05027)
+* [Wide Residual Networks](https://arxiv.org/abs/1605.07146)
+* [Aggregated Residual Transformations for Deep Neural Networks](https://arxiv.org/abs/1611.05431)
+* [Densely Connected Convolutional Networks](https://arxiv.org/abs/1608.06993)
 
 ## 安装
 

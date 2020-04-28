@@ -9,3 +9,5 @@ py/lib/models/__pycache__/
 py/lib/utils/__pycache__/
 
 py/lib/models/densenet/__pycache__/
+
+py/lib/models/resnet/__pycache__/

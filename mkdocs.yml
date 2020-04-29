@@ -31,3 +31,6 @@ extra_javascript:
 nav:
     - Home: index.md
     - 数据集: dataset.md
+    - ResNet:
+        - 引言: './resnet/index.md'
+        - 训练日志: './resnet/log-resnet_18-vs-34-vs-50.md'

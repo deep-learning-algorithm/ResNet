@@ -87,6 +87,15 @@ $ pip install -r requirements.txt
     primaryClass={cs.CV}
 }
 
+@misc{huang2016densely,
+    title={Densely Connected Convolutional Networks},
+    author={Gao Huang and Zhuang Liu and Laurens van der Maaten and Kilian Q. Weinberger},
+    year={2016},
+    eprint={1608.06993},
+    archivePrefix={arXiv},
+    primaryClass={cs.CV}
+}
+
 @misc{pascal-voc-2007,
 	author = "Everingham, M. and Van~Gool, L. and Williams, C. K. I. and Winn, J. and Zisserman, A.",
 	title = "The {PASCAL} {V}isual {O}bject {C}lasses {C}hallenge 2007 {(VOC2007)} {R}esults",

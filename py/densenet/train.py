@@ -28,7 +28,7 @@ def flops_params():
         if name == 'densenet_201':
             model = dense_net.densenet201()
         else:
-            model = res_net.resnet101()
+            model = res_net.resnet101_v2()
         gflops, params_size = metrics.compute_num_flops(model)
         print('{}: {:.3f} GFlops - {:.3f} MB'.format(name, gflops, params_size))
 
@@ -166,7 +166,7 @@ if __name__ == '__main__':
         if name == 'densenet_201':
             model = dense_net.densenet201(num_classes=num_classes)
         else:
-            model = res_net.resnet101(num_classes=num_classes)
+            model = res_net.resnet101_v2(num_classes=num_classes)
         model.eval()
         # print(model)
         model = model.to(device)

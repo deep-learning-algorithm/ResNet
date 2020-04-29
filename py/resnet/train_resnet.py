@@ -16,6 +16,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
 from torchvision.datasets import ImageFolder
+from warmup_scheduler import GradualWarmupScheduler
 
 from utils import util
 from utils import metrics
@@ -151,7 +152,7 @@ def train_model(data_loaders, data_sizes, model_name, model, criterion, optimize
 
 if __name__ == '__main__':
     flops_params()
-    
+
     device = util.get_device()
     # device = 'cpu'
 
@@ -163,6 +164,7 @@ if __name__ == '__main__':
     res_top1_acc = dict()
     res_top5_acc = dict()
     num_classes = 20
+    num_epochs = 50
     for name in ['resnet-50', 'resnet-34', 'resnet-18']:
         if name == 'resnet-50':
             model = res_net.resnet50(num_classes=num_classes)
@@ -175,12 +177,15 @@ if __name__ == '__main__':
         model = model.to(device)
 
         criterion = nn.CrossEntropyLoss()
-        optimizer = optim.Adam(model.parameters(), lr=1e-3, weight_decay=1e-4)
-        lr_schduler = optim.lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.96)
+        optimizer = optim.Adam(model.parameters(), lr=1e-2, weight_decay=1e-4)
+        # lr_schduler = optim.lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.96)
+        scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, num_epochs - 10, eta_min=1e-4)
+        lr_schduler = GradualWarmupScheduler(optimizer, multiplier=1, total_epoch=10, after_scheduler=scheduler)
 
         util.check_dir('../data/models/')
         best_model, loss_dict, top1_acc_dict, top5_acc_dict = train_model(
-            data_loaders, data_sizes, name, model, criterion, optimizer, lr_schduler, num_epochs=50, device=device)
+            data_loaders, data_sizes, name, model, criterion, optimizer, lr_schduler,
+            num_epochs=num_epochs, device=device)
         # 保存最好的模型参数
         # util.save_model(best_model.cpu(), '../data/models/best_%s.pth' % name)
 

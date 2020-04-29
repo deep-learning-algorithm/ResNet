@@ -59,7 +59,10 @@ def load_data(data_root_dir):
         data_dir = os.path.join(data_root_dir, name + '_imgs')
         # print(data_dir)
 
-        data_set = ImageFolder(data_dir, transform='%s_transform' % name)
+        if name == 'train':
+            data_set = ImageFolder(data_dir, transform=train_transform)
+        else:
+            data_set = ImageFolder(data_dir, transform=test_transform)
         data_loader = DataLoader(data_set, batch_size=96, shuffle=True, num_workers=8)
         data_loaders[name] = data_loader
         data_sizes[name] = len(data_set)

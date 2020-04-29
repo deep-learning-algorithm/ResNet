@@ -48,7 +48,7 @@ def load_data(data_root_dir):
     # 测试阶段仅执行缩放和像素值标准化操作
     test_transform = transforms.Compose([
         # transforms.ToPILImage(),
-        transforms.RandomCrop((224, 224)),
+        transforms.Resize((224, 224)),
         transforms.ToTensor(),
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     ])

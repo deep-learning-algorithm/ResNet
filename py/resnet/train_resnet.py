@@ -36,11 +36,19 @@ def flops_params():
 
 
 def load_data(data_root_dir):
-    transform = transforms.Compose([
+    train_transform = transforms.Compose([
         # transforms.ToPILImage(),
         transforms.Resize(256),
         transforms.RandomCrop((224, 224)),
         transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+    ])
+
+    # 测试阶段仅执行缩放和像素值标准化操作
+    test_transform = transforms.Compose([
+        # transforms.ToPILImage(),
+        transforms.RandomCrop((224, 224)),
         transforms.ToTensor(),
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     ])
@@ -51,7 +59,7 @@ def load_data(data_root_dir):
         data_dir = os.path.join(data_root_dir, name + '_imgs')
         # print(data_dir)
 
-        data_set = ImageFolder(data_dir, transform=transform)
+        data_set = ImageFolder(data_dir, transform='%s_transform' % name)
         data_loader = DataLoader(data_set, batch_size=96, shuffle=True, num_workers=8)
         data_loaders[name] = data_loader
         data_sizes[name] = len(data_set)

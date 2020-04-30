@@ -22,7 +22,7 @@ class BasicConv2d(nn.Module):
             norm_layer = nn.BatchNorm2d
 
         self.conv = nn.Conv2d(in_channels, out_channels, **kwargs)
-        self.bn = norm_layer(out_channels, eps=0.001)
+        self.bn = norm_layer(out_channels)
 
     def forward(self, x):
         x = self.conv(x)

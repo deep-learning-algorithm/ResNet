@@ -21,6 +21,7 @@ from warmup_scheduler import GradualWarmupScheduler
 from utils import util
 from utils import metrics
 from models.resnet import res_net
+from models.SmoothLabelCriterion import SmoothLabelCritierion
 
 
 def flops_params():
@@ -37,20 +38,21 @@ def flops_params():
 
 def load_data(data_root_dir):
     train_transform = transforms.Compose([
-        # transforms.ToPILImage(),
         transforms.Resize(256),
-        transforms.RandomCrop((224, 224)),
+        transforms.RandomCrop(224),
         transforms.RandomHorizontalFlip(),
+        transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
         transforms.ToTensor(),
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     ])
 
-    # 测试阶段仅执行缩放和像素值标准化操作
+    # 测试阶段 Ten Crop test
     test_transform = transforms.Compose([
-        # transforms.ToPILImage(),
-        transforms.Resize((224, 224)),
-        transforms.ToTensor(),
-        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+        transforms.Resize(256),
+        transforms.TenCrop(224),
+        transforms.Lambda(lambda crops: torch.stack([transforms.ToTensor()(crop) for crop in crops])),
+        transforms.Lambda(lambda crops: torch.stack(
+            [transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))(crop) for crop in crops]))
     ])
 
     data_loaders = {}
@@ -108,7 +110,12 @@ def train_model(data_loaders, data_sizes, model_name, model, criterion, optimize
                 # forward
                 # track history if only in train
                 with torch.set_grad_enabled(phase == 'train'):
-                    outputs = model(inputs)
+                    if phase == 'test':
+                        N, N_crops, C, H, W = inputs.size()
+                        result = model(inputs.view(-1, C, H, W))  # fuse batch size and ncrops
+                        outputs = result.view(N, N_crops, -1).mean(1)  # avg over crops
+                    else:
+                        outputs = model(inputs)
                     # print(outputs.shape)
                     # _, preds = torch.max(outputs, 1)
                     loss = criterion(outputs, labels)
@@ -188,15 +195,16 @@ if __name__ == '__main__':
         # print(model)
         model = model.to(device)
 
-        criterion = nn.CrossEntropyLoss()
-        optimizer = optim.Adam(model.parameters(), lr=1e-2, weight_decay=1e-4)
-        # lr_schduler = optim.lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.96)
-        scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, num_epochs - 10, eta_min=1e-4)
-        lr_schduler = GradualWarmupScheduler(optimizer, multiplier=1, total_epoch=10, after_scheduler=scheduler)
+        criterion = SmoothLabelCritierion(label_smoothing=0.1)
+        # criterion = nn.CrossEntropyLoss()
+        optimizer = optim.Adam(model.parameters(), lr=1e-3, weight_decay=1e-4)
+        scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.9)
+        # scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, num_epochs - 10, eta_min=1e-4)
+        lr_scheduler = GradualWarmupScheduler(optimizer, multiplier=1, total_epoch=5, after_scheduler=scheduler)
 
         util.check_dir('../data/models/')
         best_model, loss_dict, top1_acc_dict, top5_acc_dict = train_model(
-            data_loaders, data_sizes, name, model, criterion, optimizer, lr_schduler,
+            data_loaders, data_sizes, name, model, criterion, optimizer, lr_scheduler,
             num_epochs=num_epochs, device=device)
         # 保存最好的模型参数
         # util.save_model(best_model.cpu(), '../data/models/best_%s.pth' % name)

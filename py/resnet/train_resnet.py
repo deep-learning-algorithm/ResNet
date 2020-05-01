@@ -16,12 +16,16 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
 from torchvision.datasets import ImageFolder
-from warmup_scheduler import GradualWarmupScheduler
+
+import warnings
+
+warnings.filterwarnings("ignore")
 
 from utils import util
 from utils import metrics
 from models.resnet import res_net
 from models.SmoothLabelCriterion import SmoothLabelCritierion
+from warmup_scheduler import GradualWarmupScheduler
 
 
 def flops_params():
@@ -136,8 +140,8 @@ def train_model(data_loaders, data_sizes, model_name, model, criterion, optimize
                 running_loss += loss.item() * inputs.size(0)
                 # running_corrects += torch.sum(preds == labels.data)
             if phase == 'train':
-                lr_scheduler.step()
-                print(lr_scheduler.get_lr())
+                lr_scheduler.step(epoch + 1)
+                print('lr: {}'.format(lr_scheduler.get_lr()))
 
             epoch_loss = running_loss / data_sizes[phase]
             epoch_top1_acc = running_top1_acc / len(data_loaders[phase])

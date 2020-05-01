@@ -90,7 +90,7 @@ def train_model(data_loaders, data_sizes, model_name, model, criterion, optimize
     top5_acc_dict = {'train': [], 'test': []}
     for epoch in range(num_epochs):
 
-        print('{} - Epoch {}/{}'.format(model_name, epoch, num_epochs - 1))
+        print('{} - Epoch {}/{}'.format(model_name, epoch + 1, num_epochs))
         print('-' * 10)
 
         # Each epoch has a training and test phase

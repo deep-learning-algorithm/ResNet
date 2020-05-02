@@ -100,6 +100,21 @@ def save_model(model, model_save_path):
     torch.save(model.state_dict(), model_save_path)
 
 
+def plot(log_lrs, losses):
+    # x_major_locator = MultipleLocator(1)
+    # ax = plt.gca()
+    # ax.xaxis.set_major_locator(x_major_locator)
+    fig = plt.figure()
+
+    plt.title('loss-lr')
+    plt.xlabel('learning rate (log scale)')
+    plt.ylabel('loss (smoothed)')
+    plt.plot(log_lrs, losses)
+
+    plt.savefig('./loss-lr.png')
+    plt.show()
+
+
 def save_png(title, res_dict):
     # x_major_locator = MultipleLocator(1)
     # ax = plt.gca()

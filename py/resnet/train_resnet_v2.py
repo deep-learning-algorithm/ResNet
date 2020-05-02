@@ -17,29 +17,42 @@ from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
 from torchvision.datasets import ImageFolder
 
+from models.SmoothLabelCriterion import SmoothLabelCritierion
+from warmup_scheduler import GradualWarmupScheduler
+
 from utils import util
 from utils import metrics
 from models.resnet import res_net
 
 
 def flops_params():
-    for name in ['resnet-18_v2', 'resnet-18']:
-        if name == 'resnet-18_v2':
-            model = res_net.resnet18_v2()
+    for name in ['resnet-101_v2', 'resnet-101']:
+        if name == 'resnet-101_v2':
+            model = res_net.resnet101_v2()
         else:
-            model = res_net.resnet18()
+            model = res_net.resnet101()
         gflops, params_size = metrics.compute_num_flops(model)
         print('{}: {:.3f} GFlops - {:.3f} MB'.format(name, gflops, params_size))
 
 
 def load_data(data_root_dir):
-    transform = transforms.Compose([
-        # transforms.ToPILImage(),
+    train_transform = transforms.Compose([
         transforms.Resize(256),
-        transforms.RandomCrop((224, 224)),
+        transforms.RandomCrop(224),
         transforms.RandomHorizontalFlip(),
+        transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
         transforms.ToTensor(),
+        transforms.RandomErasing(),
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+    ])
+
+    # 测试阶段 Ten Crop test
+    test_transform = transforms.Compose([
+        transforms.Resize(256),
+        transforms.TenCrop(224),
+        transforms.Lambda(lambda crops: torch.stack([transforms.ToTensor()(crop) for crop in crops])),
+        transforms.Lambda(lambda crops: torch.stack(
+            [transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))(crop) for crop in crops]))
     ])
 
     data_loaders = {}
@@ -48,8 +61,12 @@ def load_data(data_root_dir):
         data_dir = os.path.join(data_root_dir, name + '_imgs')
         # print(data_dir)
 
-        data_set = ImageFolder(data_dir, transform=transform)
-        data_loader = DataLoader(data_set, batch_size=96, shuffle=True, num_workers=8)
+        if name == 'train':
+            data_set = ImageFolder(data_dir, transform=train_transform)
+            data_loader = DataLoader(data_set, batch_size=48, shuffle=True, num_workers=8)
+        else:
+            data_set = ImageFolder(data_dir, transform=test_transform)
+            data_loader = DataLoader(data_set, batch_size=48, shuffle=True, num_workers=8)
         data_loaders[name] = data_loader
         data_sizes[name] = len(data_set)
     return data_loaders, data_sizes
@@ -68,7 +85,7 @@ def train_model(data_loaders, data_sizes, model_name, model, criterion, optimize
     top5_acc_dict = {'train': [], 'test': []}
     for epoch in range(num_epochs):
 
-        print('{} - Epoch {}/{}'.format(model_name, epoch, num_epochs - 1))
+        print('{} - Epoch {}/{}'.format(model_name, epoch + 1, num_epochs))
         print('-' * 10)
 
         # Each epoch has a training and test phase
@@ -94,7 +111,12 @@ def train_model(data_loaders, data_sizes, model_name, model, criterion, optimize
                 # forward
                 # track history if only in train
                 with torch.set_grad_enabled(phase == 'train'):
-                    outputs = model(inputs)
+                    if phase == 'test':
+                        N, N_crops, C, H, W = inputs.size()
+                        result = model(inputs.view(-1, C, H, W))  # fuse batch size and ncrops
+                        outputs = result.view(N, N_crops, -1).mean(1)  # avg over crops
+                    else:
+                        outputs = model(inputs)
                     # print(outputs.shape)
                     # _, preds = torch.max(outputs, 1)
                     loss = criterion(outputs, labels)
@@ -113,7 +135,8 @@ def train_model(data_loaders, data_sizes, model_name, model, criterion, optimize
                 running_loss += loss.item() * inputs.size(0)
                 # running_corrects += torch.sum(preds == labels.data)
             if phase == 'train':
-                lr_scheduler.step()
+                lr_scheduler.step(epoch + 1)
+                print('lr: {}'.format(lr_scheduler.get_lr()))
 
             epoch_loss = running_loss / data_sizes[phase]
             epoch_top1_acc = running_top1_acc / len(data_loaders[phase])
@@ -133,9 +156,10 @@ def train_model(data_loaders, data_sizes, model_name, model, criterion, optimize
             if phase == 'test' and epoch_top5_acc > best_top5_acc:
                 best_top5_acc = epoch_top5_acc
 
-        # 每训练一轮就保存
-        # util.save_model(model.cpu(), '../data/models/%s_%d.pth' % (model_name, epoch))
-        # model = model.to(device)
+        # 每训练10轮保存一次
+        if (epoch + 1) % 10 == 0:
+            util.save_model(model.cpu(), '../data/models/%s_%d.pth' % (model_name, epoch + 1))
+            model = model.to(device)
 
     time_elapsed = time.time() - since
     print('Training {} complete in {:.0f}m {:.0f}s'.format(model_name, time_elapsed // 60, time_elapsed % 60))
@@ -161,22 +185,26 @@ if __name__ == '__main__':
     res_top1_acc = dict()
     res_top5_acc = dict()
     num_classes = 20
-    for name in ['resnet-18_v2', 'resnet-18']:
-        if name == 'resnet-18_v2':
-            model = res_net.resnet18_v2(num_classes=num_classes)
+    num_epochs = 100
+    for name in ['resnet-101_v2', 'resnet-101']:
+        if name == 'resnet-101_v2':
+            model = res_net.resnet101_v2()
         else:
-            model = res_net.resnet18(num_classes=num_classes)
+            model = res_net.resnet101()
         model.eval()
         # print(model)
         model = model.to(device)
 
-        criterion = nn.CrossEntropyLoss()
-        optimizer = optim.Adam(model.parameters(), lr=1e-3, weight_decay=1e-4)
-        lr_schduler = optim.lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.96)
+        criterion = SmoothLabelCritierion(label_smoothing=0.1)
+        # criterion = nn.CrossEntropyLoss()
+        optimizer = optim.Adam(model.parameters(), lr=3e-4, weight_decay=3e-5)
+        scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, num_epochs - 5, eta_min=0)
+        lr_scheduler = GradualWarmupScheduler(optimizer, multiplier=1, total_epoch=5, after_scheduler=scheduler)
 
         util.check_dir('../data/models/')
         best_model, loss_dict, top1_acc_dict, top5_acc_dict = train_model(
-            data_loaders, data_sizes, name, model, criterion, optimizer, lr_schduler, num_epochs=50, device=device)
+            data_loaders, data_sizes, name, model, criterion, optimizer, lr_scheduler,
+            num_epochs=num_epochs, device=device)
         # 保存最好的模型参数
         # util.save_model(best_model.cpu(), '../data/models/best_%s.pth' % name)
 

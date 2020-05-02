@@ -29,8 +29,8 @@ def load_data(data_root_dir='../../data/pascal-voc'):
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     ])
 
-    data_dir = os.path.join(data_root_dir, name + '_imgs')
-    data_set = ImageFolder(data_dir, train=True, download=True, transform=train_transform)
+    data_dir = os.path.join(data_root_dir, 'train_imgs')
+    data_set = ImageFolder(data_dir, transform=train_transform)
     data_loader = DataLoader(data_set, batch_size=96, shuffle=True, num_workers=8)
     return data_loader
 

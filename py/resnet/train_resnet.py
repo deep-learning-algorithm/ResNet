@@ -204,10 +204,9 @@ if __name__ == '__main__':
 
         criterion = SmoothLabelCritierion(label_smoothing=0.1)
         # criterion = nn.CrossEntropyLoss()
-        optimizer = optim.Adam(model.parameters(), lr=2e-3, weight_decay=1e-4)
-        # scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=7, gamma=0.9)
-        scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, num_epochs - 10, eta_min=1e-4)
-        lr_scheduler = GradualWarmupScheduler(optimizer, multiplier=1, total_epoch=10, after_scheduler=scheduler)
+        optimizer = optim.Adam(model.parameters(), lr=1e-3, weight_decay=1e-4)
+        scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, num_epochs - 5, eta_min=1e-4)
+        lr_scheduler = GradualWarmupScheduler(optimizer, multiplier=1, total_epoch=5, after_scheduler=scheduler)
 
         util.check_dir('../data/models/')
         best_model, loss_dict, top1_acc_dict, top5_acc_dict = train_model(

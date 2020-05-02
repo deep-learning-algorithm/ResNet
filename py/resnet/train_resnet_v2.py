@@ -135,8 +135,8 @@ def train_model(data_loaders, data_sizes, model_name, model, criterion, optimize
                 running_loss += loss.item() * inputs.size(0)
                 # running_corrects += torch.sum(preds == labels.data)
             if phase == 'train':
-                lr_scheduler.step(epoch + 1)
-                print('lr: {}'.format(lr_scheduler.get_lr()))
+                lr_scheduler.step()
+                print('lr: {}'.format(optimizer.param_groups[0]['lr']))
 
             epoch_loss = running_loss / data_sizes[phase]
             epoch_top1_acc = running_top1_acc / len(data_loaders[phase])

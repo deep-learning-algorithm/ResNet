@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 
 """
-@date: 2020/5/2 下午11:41
-@file: find_lr.py
+@date: 2020/5/2 下午11:11
+@file: find_wd.py
 @author: zj
 @description: 
 """
 
 import os
-import math
 import torch.optim as optim
 from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
@@ -36,19 +35,14 @@ def load_data(data_root_dir='../../data/pascal-voc'):
     return data_loader
 
 
-def find_lr(data_loader, model, criterion, optimizer, device, init_value=1e-8, final_value=10., beta=0.98):
+def find_wd(data_loader, model, criterion, optimizer, device, beta=0.98):
     num = len(data_loader) - 1
-    mult = (final_value / init_value) ** (1 / num)
-    lr = init_value
-    optimizer.param_groups[0]['lr'] = lr
     avg_loss = 0.
     best_loss = 0.
     batch_num = 0
     losses = []
-    log_lrs = []
     for inputs, labels in data_loader:
         batch_num += 1
-        print('{}: {}'.format(batch_num, lr))
 
         # As before, get the loss for this mini-batch of inputs/outputs
         inputs = inputs.to(device)
@@ -64,7 +58,7 @@ def find_lr(data_loader, model, criterion, optimizer, device, init_value=1e-8, f
 
         # Stop if the loss is exploding
         if batch_num > 1 and smoothed_loss > 4 * best_loss:
-            return log_lrs, losses
+            return losses
 
         # Record the best loss
         if smoothed_loss < best_loss or batch_num == 1:
@@ -72,16 +66,12 @@ def find_lr(data_loader, model, criterion, optimizer, device, init_value=1e-8, f
 
         # Store the values
         losses.append(smoothed_loss)
-        log_lrs.append(math.log10(lr))
 
         # Do the SGD step
         loss.backward()
         optimizer.step()
 
-        # Update the lr for the next step
-        lr *= mult
-        optimizer.param_groups[0]['lr'] = lr
-    return log_lrs, losses
+    return losses
 
 
 if __name__ == '__main__':
@@ -89,17 +79,20 @@ if __name__ == '__main__':
     # device = torch.device('cpu')
 
     data_loader = load_data()
-    num_classes = 20
-    for name in ['resnet']:
+    num_classes = 100
+
+    res_dict = dict()
+    for weight_decay in [0, 1e-3, 1e-4, 1e-5]:
         model = resnet101(num_classes=num_classes)
         model.eval()
         # print(model)
         model = model.to(device)
 
         criterion = SmoothLabelCritierion(label_smoothing=0.1)
-        optimizer = optim.Adam(model.parameters(), lr=1e-8)
+        optimizer = optim.Adam(model.parameters(), lr=3e-4, weight_decay=weight_decay)
 
-        log_lrs, losses = find_lr(data_loader, model, criterion, optimizer, device,
-                                  init_value=1e-8, final_value=10., beta=0.98)
-        print('lr: {}'.format(optimizer.param_groups[0]['lr']))
-        util.plot(log_lrs, losses)
+        losses = find_wd(data_loader, model, criterion, optimizer, device)
+        res_dict[str(weight_decay)] = {'loss': losses}
+        print('{} done'.format(weight_decay))
+    util.plot_loss_lr(res_dict)
+    print('done')

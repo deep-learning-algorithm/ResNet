@@ -34,3 +34,5 @@ nav:
     - ResNet:
         - 引言: './resnet/index.md'
         - 训练日志: './resnet/log-resnet_18-vs-34-vs-50.md'
+    - DenseNet:
+        - 引言: './densenet/index.md'

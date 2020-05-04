@@ -6,7 +6,7 @@
 
 实现`ResNet`及后续版本，同时实现了相关模型：
 
-* `ResNet`
+* `ResNet v1/v2`
 * `DenseNet`
 
 | CNN Architecture | Data Type (bit) | Model Size (MB) | GFlops （1080Ti） | Top-1 Acc(VOC 07+12) | Top-5 Acc(VOC 07+12) |
@@ -14,6 +14,8 @@
 |     ResNet-18    |        32       |      44.607     |       3.641       |        89.98%        |        99.29%        |
 |     ResNet-34    |        32       |      83.180     |       7.348       |        90.01%        |        99.29%        |
 |     ResNet-50    |        32       |      97.492     |       8.223       |        89.37%        |        99.39%        |
+|    ResNet-101    |        32       |    169.942 MB   |       15.668      |        90.66%        |        99.35%        |
+|   ResNet-101_v2  |        32       |    169.926 MB   |       15.668      |        90.85%        |        99.48%        |
 
 ## 内容列表
 

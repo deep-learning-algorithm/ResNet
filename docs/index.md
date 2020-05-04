@@ -6,7 +6,7 @@
 ## 实现
 
 * [ResNet](./resnet/index.md)
-* `ResNet_v2`
+* [ResNet_v2](./resnet_v2/index.md)
 * `DensetNet`
 
 ## 相关文档链接

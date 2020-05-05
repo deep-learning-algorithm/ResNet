@@ -63,7 +63,7 @@ def load_data(data_root_dir):
 
         if name == 'train':
             data_set = ImageFolder(data_dir, transform=train_transform)
-            data_loader = DataLoader(data_set, batch_size=96, shuffle=True, num_workers=8)
+            data_loader = DataLoader(data_set, batch_size=48, shuffle=True, num_workers=8)
         else:
             data_set = ImageFolder(data_dir, transform=test_transform)
             data_loader = DataLoader(data_set, batch_size=48, shuffle=True, num_workers=8)
@@ -197,7 +197,7 @@ if __name__ == '__main__':
 
         criterion = SmoothLabelCritierion(label_smoothing=0.1)
         # criterion = nn.CrossEntropyLoss()
-        optimizer = optim.Adam(model.parameters(), lr=3e-4, weight_decay=3e-5)
+        optimizer = optim.Adam(model.parameters(), lr=3e-4, weight_decay=1e-4)
         scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, num_epochs - 5, eta_min=0)
         lr_scheduler = GradualWarmupScheduler(optimizer, multiplier=1, total_epoch=5, after_scheduler=scheduler)
         optimizer.zero_grad()

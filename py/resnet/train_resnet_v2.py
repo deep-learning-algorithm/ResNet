@@ -135,8 +135,8 @@ def train_model(data_loaders, data_sizes, model_name, model, criterion, optimize
                 running_loss += loss.item() * inputs.size(0)
                 # running_corrects += torch.sum(preds == labels.data)
             if phase == 'train':
-                lr_scheduler.step()
                 print('lr: {}'.format(optimizer.param_groups[0]['lr']))
+                lr_scheduler.step()
 
             epoch_loss = running_loss / data_sizes[phase]
             epoch_top1_acc = running_top1_acc / len(data_loaders[phase])
@@ -200,6 +200,9 @@ if __name__ == '__main__':
         optimizer = optim.Adam(model.parameters(), lr=3e-4, weight_decay=3e-5)
         scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, num_epochs - 5, eta_min=0)
         lr_scheduler = GradualWarmupScheduler(optimizer, multiplier=1, total_epoch=5, after_scheduler=scheduler)
+        optimizer.zero_grad()
+        optimizer.step()
+        lr_scheduler.step()
 
         util.check_dir('../data/models/')
         best_model, loss_dict, top1_acc_dict, top5_acc_dict = train_model(

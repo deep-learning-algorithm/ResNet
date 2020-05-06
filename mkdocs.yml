@@ -39,3 +39,4 @@ nav:
         - 训练日志: './resnet_v2/log-resnet101_v2-vs-resnet101.md'
     - DenseNet:
         - 引言: './densenet/index.md'
+        - 训练日志: './densenet/log-dense101-vs-resnet34_v2.md'

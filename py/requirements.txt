@@ -7,7 +7,7 @@ matplotlib == 3.1.2
 # lib/data/create_train_val.py: 11
 # lib/data/pascal_voc.py: 13
 # lib/utils/util.py: 11
-numpy == 1.17.2
+numpy == 1.22.0
 
 # lib/utils/metrics.py: 11
 thop == 0.0.31.post2004272040
